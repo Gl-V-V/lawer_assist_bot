@@ -4,6 +4,16 @@ let msg = contents.message;
 let chatId = msg.chat.id;
 let userName = contents.message.chat.first_name;
 
+if (msg.text.toLowerCase() === 'положение о раскрытии информации') {
+  sendMessage (`${userName},
+Положение о раскрытии информации можно скачать по <a href="https://www.sberbank.com/common/img/uploaded/files/pdf/normative_docs/emitter_information_regulations_22022013.pdf">ссылке</a>`, chatId)
+}
+
+if (msg.text.toLowerCase() === 'информационная политика') {
+  sendMessage (`${userName},
+Положение о раскрытии информации можно скачать по <a href="https://www.sberbank.com/common/img/uploaded/files/pdf/normative_docs/informatsionnaya_politika_rus.pdf">ссылке</a>`, chatId)
+}
+    
 if (msg.text === '/start' || 
     msg.text.toLowerCase().indexOf('привет') != -1 || 
     msg.text.toLowerCase().indexOf('добрый день') != -1 || 
