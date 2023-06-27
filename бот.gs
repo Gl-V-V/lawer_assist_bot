@@ -4,6 +4,13 @@ let msg = contents.message;
 let chatId = msg.chat.id;
 let userName = contents.message.chat.first_name;
 
+if (msg.text.indexOf('http') != -1){
+  let summary = getSummary(msg.text)
+  if (summary) {
+    sendMessage(summary, chatId)
+  }
+}
+
 if (msg.text.toLowerCase() === 'положение о раскрытии информации') {
   sendMessage (`${userName},
 Положение о раскрытии информации можно скачать по <a href="https://www.sberbank.com/common/img/uploaded/files/pdf/normative_docs/emitter_information_regulations_22022013.pdf">ссылке</a>`, chatId)
