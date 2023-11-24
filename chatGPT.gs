@@ -1,7 +1,8 @@
 const apiKey = "КЛЮЧ ОПЕНАИ АПИ"
 
-function callChatGPT(features) {
-  try {
+function askChatGPT(que) {
+  const faq = DocumentApp.openById('ID документа с юридическим заключением').getBody().getText()
+  const features = `Мне нужен ответ на следующий вопрос: "${que}". Найди ответ в следующем тексте: "${faq}". Если текст не содержит ответа, ответь: "Я не могу дать ответ.`
   const apiUrl = 'https://api.openai.com/v1/chat/completions';
   const options = {
     method: 'post',
@@ -12,7 +13,7 @@ function callChatGPT(features) {
     muteHttpExceptions: true,
     payload: JSON.stringify(
      {
-     "model": "gpt-3.5-turbo",
+     "model": "gpt-3.5-turbo-16k",
      "messages": [{
                    "role": "user", 
                    "content": features,
@@ -21,11 +22,14 @@ function callChatGPT(features) {
      }),
   };
   const response = UrlFetchApp.fetch(apiUrl, options);
-  const content = JSON.parse ( response.getContentText() )
+  const content = response.getContentText();
   console.log(content)
-  return content.choices[0].message.content
-  } catch (e) {
-    console.log(e)
-    return 'ЧатГПТ сейчас недоступен. Попробуйте немного позже.'
+
+  let json = JSON.parse(content)
+
+  if (json.error) {
+    return json.error.message
   }
+
+  return json.choices[0].message.content
 }
