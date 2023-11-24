@@ -1,8 +1,22 @@
 function doPost(e) {
+
 let contents = JSON.parse(e.postData.contents);
 let msg = contents.message;
 let chatId = msg.chat.id;
 let userName = contents.message.chat.first_name;
+
+if (getSessionID(String(contents.update_id))){
+   return
+} else {
+setSessionID(String(contents.update_id))
+}
+
+if (msg.text.toLowerCase().indexOf('алимент') != -1){
+  let answer = askChatGPT(msg.text)
+  if (answer) {
+    sendReplyMessage (answer, chatId, msg.message_id)
+  }
+}
 
 if (msg.text.indexOf('http') != -1){
   let summary = getSummary(msg.text)
@@ -59,11 +73,21 @@ sendMessage(request, chatId);
 return
 }  
 
-if (msg.text){
-sendMessage(`Задал вопрос чатуГПТ. скоро вернусь с ответом...`, chatId);
-let answer = callChatGPT(msg.text)
-sendMessage(answer, chatId);
-return
 }
 
+function getSessionID(id){
+  const sss = SpreadsheetApp.openById('ID таблицы с журналом сессиий').getSheetByName('session') 
+  let sessions_id_list = sss.getRange(1,1,sss.getLastRow(),1).getValues()
+  let status = false
+  sessions_id_list.map((e) => {
+    if (e[0] == id){
+      status = true
+    }
+    });
+    return status
+}
+
+function setSessionID(id){
+  const sss = SpreadsheetApp.openById('ID таблицы с журналом сессиий').getSheetByName('session') 
+  sss.getRange(sss.getLastRow()+1,1).setValue(id)
 }
